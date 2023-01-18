@@ -4,7 +4,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import GoalForm from '../components/GoalForm';
 import GoalItem from '../components/GoalItem';
 import Spinner from '../components/Spinner';
-import { getGoals, reset } from '../features/goals/goalSlice';
+import { getGoals } from '../features/goals/goalSlice';
+import { reset } from '../features/auth/authSlice';
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -19,17 +20,13 @@ function Dashboard() {
     if (isError) {
       console.log(message);
     }
-
-    if (!user) {
+    if (user) {
+      dispatch(getGoals());
+    } else {
       navigate('/login');
     }
-
-    dispatch(getGoals());
-
-    return () => {
-      dispatch(reset());
-    };
-  }, [user, navigate, isError, message, dispatch]);
+    dispatch(reset());
+  }, [dispatch, isError, message, navigate, user]);
 
   if (isLoading) {
     return <Spinner />;
